@@ -24,6 +24,7 @@ export class UsersService {
   }
 
   find(email: string) {
+    if (email.trim() === '') email = undefined;
     return this.repo.find({ where: { email } });
   }
 
