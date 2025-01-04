@@ -4,11 +4,13 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { CreateUserDTO } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
+import { UpdateUserDTO } from './dtos/update-user.dto';
 
 @Controller('auth')
 export class UsersController {
@@ -35,5 +37,9 @@ export class UsersController {
   @Delete('/:id')
   deleteUser(@Param('id') id: string) {
     return this.usersService.remove(+id);
+  }
+  @Patch('/:id')
+  updateUser(@Param('id') id: string, @Body() body: UpdateUserDTO) {
+    return this.usersService.update(+id, body);
   }
 }
