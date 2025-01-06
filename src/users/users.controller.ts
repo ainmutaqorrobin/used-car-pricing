@@ -29,8 +29,7 @@ export class UsersController {
 
   @Post('/signin')
   signin(@Body() body: CreateUserDTO) {
-    const { email, password } = body;
-    console.log(body);
+    return this.authService.signin(body.email, body.password);
   }
   @Get()
   findAllUsers(@Query('email') email: string) {
