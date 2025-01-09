@@ -16,9 +16,10 @@ import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDTO } from './dtos/user.dto';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
+import { User } from './users.entity';
 
 @Controller('auth')
-@Serialize(UserDTO)
+@Serialize(UserDTO) //prevent exposing sensitive information
 export class UsersController {
   constructor(
     private usersService: UsersService,
@@ -26,7 +27,7 @@ export class UsersController {
   ) {}
 
   @Get('/whoamI')
-  whoAmI(@CurrentUser() user: string) {
+  whoAmI(@CurrentUser() user: User) {
     return user;
   }
 
