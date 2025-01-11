@@ -25,4 +25,13 @@ describe('AuthService testing using fake service', () => {
   it('can create an instance of auth service', async () => {
     expect(service).toBeDefined();
   });
+
+  it('create new user with salted and hashed password', async () => {
+    const user = await service.signup('testuser@gmail.com', 'test');
+
+    expect(user.password).not.toEqual('test');
+    const [salt, hashedPassword] = user.password.split('.');
+    expect(salt).toBeDefined();
+    expect(hashedPassword).toBeDefined();
+  });
 });
