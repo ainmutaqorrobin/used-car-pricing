@@ -3,21 +3,26 @@ import { AuthService } from './auth.service';
 import { UsersService } from './users.service';
 import { User } from './users.entity';
 
-it('can create an instance of auth service', async () => {
-  //Create fake copy of users service
-  const fakeUsersService: Partial<UsersService> = {
-    find: () => Promise.resolve([]),
-    create: (email: string, password: string) =>
-      Promise.resolve({ id: 1, email, password } as User),
-  };
-  const module = await Test.createTestingModule({
-    providers: [
-      AuthService,
-      { provide: UsersService, useValue: fakeUsersService },
-    ],
-  }).compile();
+describe('AuthService testing using fake service', () => {
+  let service: AuthService;
+  beforeEach(async () => {
+    //Create fake copy of users service
+    const fakeUsersService: Partial<UsersService> = {
+      find: () => Promise.resolve([]),
+      create: (email: string, password: string) =>
+        Promise.resolve({ id: 1, email, password } as User),
+    };
+    const module = await Test.createTestingModule({
+      providers: [
+        AuthService,
+        { provide: UsersService, useValue: fakeUsersService },
+      ],
+    }).compile();
 
-  const service = module.get(AuthService);
+    service = module.get(AuthService);
+  });
 
-  expect(service).toBeDefined();
+  it('can create an instance of auth service', async () => {
+    expect(service).toBeDefined();
+  });
 });
