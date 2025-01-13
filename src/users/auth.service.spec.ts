@@ -2,7 +2,11 @@ import { Test } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { UsersService } from './users.service';
 import { User } from './users.entity';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 
 describe('AuthService testing using fake service', () => {
   let service: AuthService;
@@ -37,16 +41,20 @@ describe('AuthService testing using fake service', () => {
     expect(hashedPassword).toBeDefined();
   });
 
-  // it('throws error if user signup with existed email', async () => {
-  //   fakeUsersService.find = () =>
-  //     Promise.resolve([{ id: 1, email: 'a', password: '1' } as User]);
+  it('throws error if user signup with existed email', async () => {
+    fakeUsersService.find = () =>
+      Promise.resolve([
+        { id: 1, email: 'test@gmail.com', password: 'test' } as User,
+      ]);
 
-  //   await expect(service.signup('test@gmail.com', 'test')).rejects.toThrow(
-  //     BadRequestException,
-  //   );
-  // });
+    await expect(service.signup('test@gmail.com', 'test')).rejects.toThrow(
+      ConflictException,
+    );
+  });
 
   it('throws if signin with email does not exist', async () => {
+    fakeUsersService.find = () => Promise.resolve([]);
+
     await expect(
       service.signin('asdasdasdasd@gmail.com', 'test'),
     ).rejects.toThrow(NotFoundException);
