@@ -51,4 +51,13 @@ describe('AuthService testing using fake service', () => {
       service.signin('asdasdasdasd@gmail.com', 'test'),
     ).rejects.toThrow(NotFoundException);
   });
+
+  it('throws if user entered invalid password', async () => {
+    fakeUsersService.find = () =>
+      Promise.resolve([{ email: 'ain@gmail.com', password: '123' } as User]);
+
+    await expect(service.signin('ain@gmail.com', 'passowrd')).rejects.toThrow(
+      BadRequestException,
+    );
+  });
 });
