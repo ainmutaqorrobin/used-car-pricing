@@ -13,11 +13,23 @@ describe('AuthService testing using fake service', () => {
   let fakeUsersService: Partial<UsersService>;
   beforeEach(async () => {
     //Create fake copy of users service
+    const users: User[] = [];
     fakeUsersService = {
-      find: () => Promise.resolve([]),
-      create: (email: string, password: string) =>
-        Promise.resolve({ id: 1, email, password } as User),
+      find: (email: string) => {
+        const filteredUsers = users.filter((user) => user.email === email);
+        return Promise.resolve(filteredUsers);
+      },
+      create: (email: string, password: string) => {
+        const user = {
+          id: Math.floor(Math.random() * 999999),
+          email,
+          password,
+        } as User;
+        users.push(user);
+        return Promise.resolve(user);
+      },
     };
+
     const module = await Test.createTestingModule({
       providers: [
         AuthService,
@@ -68,16 +80,9 @@ describe('AuthService testing using fake service', () => {
       BadRequestException,
     );
   });
+
   it('returns a user if correct password is provided', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([
-        {
-          email: 'ain@gmail.com',
-          //encrypted password
-          password:
-            'a6cef35946e23372.fe17a8ca945b250bbea6f2472527c9b7632b93cc05aa88016a03e8175f3af7a8',
-        } as User,
-      ]);
+    await service.signup('ain@gmail.com', '123');
     const user = await service.signin('ain@gmail.com', '123');
     expect(user).toBeDefined();
   });
