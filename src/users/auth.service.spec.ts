@@ -54,10 +54,7 @@ describe('AuthService testing using fake service', () => {
   });
 
   it('throws error if user signup with existed email', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([
-        { id: 1, email: 'test@gmail.com', password: 'test' } as User,
-      ]);
+    await service.signup('test@gmail.com', 'test');
 
     await expect(service.signup('test@gmail.com', 'test')).rejects.toThrow(
       ConflictException,
@@ -65,16 +62,13 @@ describe('AuthService testing using fake service', () => {
   });
 
   it('throws if signin with email does not exist', async () => {
-    fakeUsersService.find = () => Promise.resolve([]);
-
     await expect(
       service.signin('asdasdasdasd@gmail.com', 'test'),
     ).rejects.toThrow(NotFoundException);
   });
 
   it('throws if user entered invalid password', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([{ email: 'ain@gmail.com', password: '123' } as User]);
+    await service.signup('ain@gmail.com', 'password');
 
     await expect(service.signin('ain@gmail.com', 'passowrd')).rejects.toThrow(
       BadRequestException,
