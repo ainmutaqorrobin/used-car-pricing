@@ -68,4 +68,17 @@ describe('AuthService testing using fake service', () => {
       BadRequestException,
     );
   });
+  it('returns a user if correct password is provided', async () => {
+    fakeUsersService.find = () =>
+      Promise.resolve([
+        {
+          email: 'ain@gmail.com',
+          //encrypted password
+          password:
+            'a6cef35946e23372.fe17a8ca945b250bbea6f2472527c9b7632b93cc05aa88016a03e8175f3af7a8',
+        } as User,
+      ]);
+    const user = await service.signin('ain@gmail.com', '123');
+    expect(user).toBeDefined();
+  });
 });
