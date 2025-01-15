@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { AuthService } from './auth.service';
-import { UpdateUserDTO } from './dtos/update-user.dto';
 import { User } from './users.entity';
 import { UsersController } from './users.controller';
 import { NotFoundException } from '@nestjs/common';
@@ -23,12 +22,11 @@ describe('UsersController', () => {
       find: (email: string) => {
         return Promise.resolve([{ id: 1, email, password: 'test' } as User]);
       },
-      // remove: (id: number) => {},
-      // update: (id: number, body: UpdateUserDTO) => {},
     };
     fakeAuthService = {
-      // signin: () => {},
-      // signup: () => {},
+      signin: (email: string, password: string) => {
+        return Promise.resolve({ id: 1, email, password } as User);
+      },
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -61,5 +59,16 @@ describe('UsersController', () => {
   it('findUser throws not found exception if given id is not found', async () => {
     fakeUsersService.findOne = (id) => Promise.reject(new NotFoundException());
     await expect(controller.findUser('1')).rejects.toThrow(NotFoundException);
+  });
+
+  it('signin will update session object and return user', async () => {
+    const session = { userId: 0 };
+    const user = await controller.signin(
+      { email: 'test@gmail.com', password: 'test' },
+      session,
+    );
+
+    expect(user.id).toEqual(1);
+    expect(session.userId).toEqual(1);
   });
 });
