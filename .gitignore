@@ -59,3 +59,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 #Extra file
 package-lock.json
+
+#DB file
+db.sqlite
+test.sqlite
