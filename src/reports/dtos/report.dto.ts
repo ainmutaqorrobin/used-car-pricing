@@ -17,6 +17,8 @@ export class ReportDTO {
   model: String;
   @Expose()
   milleage: number;
+  @Expose()
+  approved: boolean;
 
   @Transform(({ obj }) => obj.user.id)
   @Expose()
