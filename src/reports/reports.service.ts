@@ -26,11 +26,25 @@ export class ReportsService {
     return this.repo.save(report);
   }
 
-  async createEstimate(estimateDTO: GetEstimateDTO) {
+  async createEstimate({
+    make,
+    lat,
+    lng,
+    milleage,
+    model,
+    year,
+  }: GetEstimateDTO) {
     return this.repo
       .createQueryBuilder()
-      .select('*')
-      .where('make=:make', { make: estimateDTO.make })
-      .getRawMany();
+      .select('AVG(price)', 'price')
+      .where('make=:make', { make })
+      .andWhere('model=:model', { model })
+      .andWhere('lng-:lng BETWEEN -5 AND 5', { lng })
+      .andWhere('lat-:lat BETWEEN -5 AND 5', { lat })
+      .andWhere('year-:year BETWEEN -3 AND 3', { year })
+      .orderBy('ABS(milleage -: mileage)', 'DESC')
+      .setParameters({ milleage })
+      .limit(3)
+      .getRawOne();
   }
 }
