@@ -8,42 +8,34 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   createTypeOrmOptions(
     connectionName?: string,
   ): Promise<TypeOrmModuleOptions> | TypeOrmModuleOptions {
+    const baseConfig = {
+      type: this.configService.get<any>('DB_TYPE'),
+      synchronize: JSON.parse(this.configService.get<string>('SYNCHRONIZE')),
+      database: this.configService.get<string>('DB_NAME'),
+      autoLoadEntities: true,
+      migrations: ['src/migrations/**/*.ts'],
+    };
+
     switch (process.env.NODE_ENV) {
       case 'development':
         return {
-          type: this.configService.get<any>('DB_TYPE'),
-          synchronize: JSON.parse(
-            this.configService.get<string>('SYNCHRONIZE'),
-          ),
-          database: this.configService.get<string>('DB_NAME'),
-          autoLoadEntities: true,
+          ...baseConfig,
         };
       case 'test':
         return {
-          type: this.configService.get<any>('DB_TYPE'),
-          synchronize: JSON.parse(
-            this.configService.get<string>('SYNCHRONIZE'),
-          ),
-          database: this.configService.get<string>('DB_NAME'),
-          autoLoadEntities: true,
+          ...baseConfig,
           migrationsRun: JSON.parse(
             this.configService.get<string>('MIGRATIONS_RUN'),
           ),
         };
       case 'production':
-        const obj = {
-          type: this.configService.get<any>('DB_TYPE'),
-          synchronize: JSON.parse(
-            this.configService.get<string>('SYNCHRONIZE'),
-          ),
-          database: this.configService.get<string>('DB_NAME'),
-          autoLoadEntities: true,
+        return {
+          ...baseConfig,
           migrationsRun: JSON.parse(
             this.configService.get<string>('MIGRATIONS_RUN'),
           ),
         };
 
-        return obj;
       default:
         throw new Error('Unknown environment');
     }
