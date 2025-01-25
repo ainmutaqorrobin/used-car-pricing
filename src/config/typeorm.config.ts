@@ -34,6 +34,9 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
           migrationsRun: JSON.parse(
             this.configService.get<string>('MIGRATIONS_RUN'),
           ),
+          url: JSON.parse(this.configService.get<string>('DATABASE_URL')),
+          entities: ['**/*.entity.js'],
+          ssl: { rejectUnauthorized: false }, //Hiroku config
         };
 
       default:
