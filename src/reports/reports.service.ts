@@ -30,7 +30,7 @@ export class ReportsService {
     make,
     lat,
     lng,
-    milleage,
+    mileage,
     model,
     year,
   }: GetEstimateDTO) {
@@ -43,8 +43,8 @@ export class ReportsService {
       .andWhere('lat-:lat BETWEEN -5 AND 5', { lat })
       .andWhere('year-:year BETWEEN -3 AND 3', { year })
       .andWhere('approved IS TRUE')
-      .orderBy('ABS(milleage -:mileage)', 'DESC')
-      .setParameters({ milleage })
+      .orderBy('ABS(mileage -:mileage)', 'DESC')
+      .setParameters({ mileage })
       .limit(3)
       .getRawOne();
   }

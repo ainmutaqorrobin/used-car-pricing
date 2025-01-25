@@ -25,7 +25,7 @@ export class GetEstimateDTO {
   @IsNumber()
   @Min(0)
   @Max(1000000)
-  milleage: number;
+  mileage: number;
 
   @Transform(({ value }) => parseFloat(value))
   @IsLongitude()

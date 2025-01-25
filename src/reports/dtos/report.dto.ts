@@ -16,7 +16,7 @@ export class ReportDTO {
   @Expose()
   model: String;
   @Expose()
-  milleage: number;
+  mileage: number;
   @Expose()
   approved: boolean;
 
